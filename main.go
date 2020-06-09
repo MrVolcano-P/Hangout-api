@@ -36,8 +36,10 @@ func main() {
 	hmac := hash.NewHMAC(conf.HMACKey)
 	us := models.NewUserService(db, hmac)
 	ims := models.NewImageService(db)
+	ps := models.NewPubService(db)
+	gg := models.NewGeoService(db)
 
-	h := handlers.NewHandler(us, ims)
+	h := handlers.NewHandler(us, ims, ps, gg)
 
 	r := gin.Default()
 
@@ -56,6 +58,8 @@ func main() {
 	r.POST("/signup", h.Signup)
 	r.POST("/login", h.Login)
 	r.GET("/checkUsername/:username", h.CheckUsername)
+	r.POST("/pub",h.CreatePub)
+	r.GET("/pub",h.ListPub)
 	auth := r.Group("/")
 	auth.Use(middleware.RequireUser(us))
 	{

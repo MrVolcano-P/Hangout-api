@@ -11,6 +11,8 @@ func Reset(db *gorm.DB) error {
 	err := db.DropTableIfExists(
 		&User{},
 		&Image{},
+		&Pub{},
+		&Geolocation{},
 	).Error
 	if err != nil {
 		log.Println(err)
@@ -25,5 +27,7 @@ func AutoMigrate(db *gorm.DB) error {
 	return db.AutoMigrate(
 		&User{},
 		&Image{},
+		&Pub{},
+		&Geolocation{},
 	).Error
 }
