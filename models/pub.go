@@ -7,6 +7,7 @@ type Pub struct {
 	Name        string `gorm:"not null"`
 	Image       string `gorm:"not null"`
 	Geolocation Geolocation
+	Review      []Review
 }
 type PubService interface {
 	Create(pub *Pub) error

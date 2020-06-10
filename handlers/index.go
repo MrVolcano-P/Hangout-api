@@ -7,8 +7,9 @@ type Handler struct {
 	ims models.ImageService
 	ps  models.PubService
 	gs  models.GeoService
+	rs  models.ReviewService
 }
 
-func NewHandler(us models.UserService, ims models.ImageService, ps models.PubService,gs models.GeoService) *Handler {
-	return &Handler{us, ims, ps,gs}
+func NewHandler(us models.UserService, ims models.ImageService, ps models.PubService, gs models.GeoService, rs models.ReviewService) *Handler {
+	return &Handler{us, ims, ps, gs, rs}
 }

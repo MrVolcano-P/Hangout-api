@@ -38,8 +38,9 @@ func main() {
 	ims := models.NewImageService(db)
 	ps := models.NewPubService(db)
 	gg := models.NewGeoService(db)
+	rg := models.NewReviewService(db)
 
-	h := handlers.NewHandler(us, ims, ps, gg)
+	h := handlers.NewHandler(us, ims, ps, gg, rg)
 
 	r := gin.Default()
 
@@ -58,8 +59,9 @@ func main() {
 	r.POST("/signup", h.Signup)
 	r.POST("/login", h.Login)
 	r.GET("/checkUsername/:username", h.CheckUsername)
-	r.POST("/pub",h.CreatePub)
-	r.GET("/pub",h.ListPub)
+	r.POST("/pub", h.CreatePub)
+	r.GET("/pub", h.ListPub)
+	r.GET("/review/:id", h.GetReviewByPubID)
 	auth := r.Group("/")
 	auth.Use(middleware.RequireUser(us))
 	{
@@ -70,6 +72,9 @@ func main() {
 			user.POST("/profile", h.UpdateProfile)
 			user.POST("/profile/image", h.CreateImage)
 			user.PUT("/profile/image", h.UpdateProfileImage)
+
+			user.POST("/review/:id", h.CreateReview)
+
 		}
 	}
 	r.Run(":8080")

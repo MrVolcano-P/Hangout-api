@@ -13,6 +13,7 @@ func Reset(db *gorm.DB) error {
 		&Image{},
 		&Pub{},
 		&Geolocation{},
+		&Review{},
 	).Error
 	if err != nil {
 		log.Println(err)
@@ -29,5 +30,6 @@ func AutoMigrate(db *gorm.DB) error {
 		&Image{},
 		&Pub{},
 		&Geolocation{},
+		&Review{},
 	).Error
 }

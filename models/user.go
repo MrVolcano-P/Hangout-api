@@ -24,6 +24,7 @@ type User struct {
 	DOB       time.Time `gorm:"not null"`
 	Image     Image
 	Token     string `gorm:"index"`
+	Review    []Review
 }
 
 type UserService interface {
