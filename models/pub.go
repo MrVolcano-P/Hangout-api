@@ -12,12 +12,6 @@ type Pub struct {
 type PubService interface {
 	Create(pub *Pub) error
 	ListAllPub() ([]Pub, error)
-	// Login(user *User) (string, error)
-	// GetByToken(token string) (*User, error)
-	// Logout(user *User) error
-	// GetByID(id uint) (*User, error)
-	// UpdateProfile(id uint, name string) error
-	// CheckUsername(username string) bool
 }
 
 func NewPubService(db *gorm.DB) PubService {

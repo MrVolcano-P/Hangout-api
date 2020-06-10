@@ -15,13 +15,6 @@ type Review struct {
 type ReviewService interface {
 	Create(review *Review) error
 	GetByPubID(id uint) ([]Review, error)
-	// ListAllPub() ([]Pub, error)
-	// Login(user *User) (string, error)
-	// GetByToken(token string) (*User, error)
-	// Logout(user *User) error
-	// GetByID(id uint) (*User, error)
-	// UpdateProfile(id uint, name string) error
-	// CheckUsername(username string) bool
 }
 
 func NewReviewService(db *gorm.DB) ReviewService {

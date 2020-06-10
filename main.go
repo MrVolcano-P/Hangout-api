@@ -37,10 +37,12 @@ func main() {
 	us := models.NewUserService(db, hmac)
 	ims := models.NewImageService(db)
 	ps := models.NewPubService(db)
-	gg := models.NewGeoService(db)
-	rg := models.NewReviewService(db)
+	gs := models.NewGeoService(db)
+	rs := models.NewReviewService(db)
+	pts := models.NewPartyService(db)
+	ms := models.NewMemberService(db)
 
-	h := handlers.NewHandler(us, ims, ps, gg, rg)
+	h := handlers.NewHandler(us, ims, ps, gs, rs, pts, ms)
 
 	r := gin.Default()
 
@@ -61,6 +63,7 @@ func main() {
 	r.GET("/checkUsername/:username", h.CheckUsername)
 	r.POST("/pub", h.CreatePub)
 	r.GET("/pub", h.ListPub)
+	r.GET("/pub/party/:id", h.GetPartiesBypubID)
 	r.GET("/review/:id", h.GetReviewByPubID)
 	auth := r.Group("/")
 	auth.Use(middleware.RequireUser(us))
@@ -74,6 +77,10 @@ func main() {
 			user.PUT("/profile/image", h.UpdateProfileImage)
 
 			user.POST("/review/:id", h.CreateReview)
+
+			user.POST("/party/:id", h.CreateParty)
+			user.GET("/party", h.GetPartiesByuserID)
+			user.POST("/party/:id/join", h.JoinParty)
 
 		}
 	}

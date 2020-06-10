@@ -29,6 +29,11 @@ type SignupReq struct {
 	LastName  string `json:"lastName"`
 	DOB       string `json:"dob"`
 }
+type UserParty struct {
+	ID       uint   `json:"id"`
+	Username string `json:"username"`
+	Name     string `json:"name"`
+}
 
 func (h *Handler) Signup(c *gin.Context) {
 	req := new(SignupReq)
