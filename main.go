@@ -72,7 +72,7 @@ func main() {
 		user := auth.Group("/user")
 		{
 			user.GET("/profile", h.GetProfile)
-			user.POST("/profile", h.UpdateProfile)
+			user.PUT("/profile", h.UpdateProfile)
 			user.POST("/profile/image", h.CreateImage)
 			user.PUT("/profile/image", h.UpdateProfileImage)
 

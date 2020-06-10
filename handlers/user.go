@@ -61,13 +61,13 @@ func (h *Handler) Signup(c *gin.Context) {
 		return
 	}
 	c.JSON(201, gin.H{
-		"token":    user.Token,
-		"username": user.Username,
-		"email":    user.Email,
-		"name":     user.Name,
-		"fistName": user.FirstName,
-		"lastName": user.LastName,
-		"dob":      user.DOB,
+		"token":     user.Token,
+		"username":  user.Username,
+		"email":     user.Email,
+		"name":      user.Name,
+		"firstName": user.FirstName,
+		"lastName":  user.LastName,
+		"dob":       user.DOB,
 	})
 }
 
@@ -142,7 +142,6 @@ func (h *Handler) GetProfile(c *gin.Context) {
 }
 
 type UpdateProfileReq struct {
-	Username  string    `json:"username"`
 	Email     string    `json:"email"`
 	FirstName string    `json:"firstName"`
 	LastName  string    `json:"lastName"`
@@ -161,24 +160,33 @@ func (h *Handler) UpdateProfile(c *gin.Context) {
 		Error(c, 400, err)
 		return
 	}
-	err := h.us.UpdateProfile(user.ID, req.Name)
+
+	userReq := new(models.User)
+	userReq.Name = req.Name
+	userReq.Email = req.Email
+	userReq.FirstName = req.FirstName
+	userReq.LastName = req.LastName
+	userReq.DOB = req.DOB
+
+	err := h.us.UpdateProfile(user.ID, userReq)
 	if err != nil {
 		Error(c, 500, err)
 		return
 	}
-	userUp, err := h.us.GetByID(uint(user.ID))
-	if err != nil {
-		Error(c, 500, err)
-		return
-	}
+	// userUp, err := h.us.GetByID(uint(user.ID))
+	// if err != nil {
+	// 	Error(c, 500, err)
+	// 	return
+	// }
 	c.JSON(200, gin.H{
-		"id":       userUp.ID,
+		"id":       user.ID,
 		"username": user.Username,
-		"name":     userUp.Name,
-		"email":    userUp.Email,
-		"fistName": user.FirstName,
-		"lastName": user.LastName,
-		"dob":      user.DOB,
+		"name":     userReq.Name,
+		"email":    userReq.Email,
+		"fistName": userReq.FirstName,
+		"lastName": userReq.LastName,
+		"dob":      userReq.DOB,
+		"image":    user.Image,
 	})
 }
 

@@ -33,7 +33,7 @@ type UserService interface {
 	GetByToken(token string) (*User, error)
 	Logout(user *User) error
 	GetByID(id uint) (*User, error)
-	UpdateProfile(id uint, name string) error
+	UpdateProfile(id uint, user *User) error
 	CheckUsername(username string) bool
 }
 
@@ -128,8 +128,9 @@ func (ug *userGorm) GetByID(id uint) (*User, error) {
 	return user, nil
 }
 
-func (ug *userGorm) UpdateProfile(id uint, name string) error {
-	return ug.db.Model(&User{}).Where("id = ?", id).Update("name", name).Error
+func (ug *userGorm) UpdateProfile(id uint, user *User) error {
+	return ug.db.Model(&User{}).Where("id = ?", id).
+		Updates(map[string]interface{}{"name": user.Name, "email": user.Email, "first_name": user.FirstName, "last_name": user.LastName, "dob": user.DOB}).Error
 }
 func (ug *userGorm) CheckUsername(username string) bool {
 	user := new(User)
