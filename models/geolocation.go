@@ -9,6 +9,7 @@ type Geolocation struct {
 }
 type GeoService interface {
 	Create(geolocation *Geolocation) error
+	GetbyPubID(id uint) (*Geolocation, error)
 	// Login(user *User) (string, error)
 	// GetByToken(token string) (*User, error)
 	// Logout(user *User) error
@@ -27,4 +28,12 @@ type geoGorm struct {
 
 func (gg *geoGorm) Create(geolocation *Geolocation) error {
 	return gg.db.Create(geolocation).Error
+}
+func (gg *geoGorm) GetbyPubID(id uint) (*Geolocation, error) {
+	geo := &Geolocation{}
+	err := gg.db.Where("pub_id = ?", id).First(geo).Error
+	if err != nil {
+		return nil, err
+	}
+	return geo, err
 }

@@ -12,6 +12,7 @@ type Pub struct {
 type PubService interface {
 	Create(pub *Pub) error
 	ListAllPub() ([]Pub, error)
+	GetByID(id uint) (*Pub, error)
 }
 
 func NewPubService(db *gorm.DB) PubService {
@@ -42,4 +43,13 @@ func (pg *pubGorm) ListAllPub() ([]Pub, error) {
 		pubs[i].Geolocation = geo
 	}
 	return pubs, nil
+}
+
+func (pg *pubGorm) GetByID(id uint) (*Pub, error) {
+	pub := &Pub{}
+	err := pg.db.Where("id = ?", id).First(pub).Error
+	if err != nil {
+		return nil, err
+	}
+	return pub, nil
 }

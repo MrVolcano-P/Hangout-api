@@ -19,6 +19,7 @@ type Party struct {
 	Date       time.Time `json:"date"`
 	Members    []Member  `json:"members"`
 	Leader     UserParty `json:"leader"`
+	Pub        Pub       `json:"pub"`
 }
 type PartyReq struct {
 	Name       string    `json:"name"`
@@ -73,6 +74,26 @@ func (h *Handler) CreateParty(c *gin.Context) {
 		Name:     user.Name,
 	})
 
+	pub, err := h.ps.GetByID(uint(id))
+	if err != nil {
+		Error(c, 500, err)
+		return
+	}
+	geo, err := h.gs.GetbyPubID(pub.ID)
+	if err != nil {
+		Error(c, 500, err)
+		return
+	}
+	geores := Geolocation{
+		Longtitude: geo.Longtitude,
+		Latitude:   geo.Latitude,
+	}
+	pubres := Pub{
+		ID:          pub.ID,
+		Name:        pub.Name,
+		Image:       pub.Image,
+		Geolocation: geores,
+	}
 	res := new(Party)
 	res.ID = party.ID
 	res.Name = party.Name
@@ -84,6 +105,7 @@ func (h *Handler) CreateParty(c *gin.Context) {
 		Name:     user.Name,
 	}
 	res.Members = members
+	res.Pub = pubres
 
 	c.JSON(201, res)
 }
@@ -125,7 +147,26 @@ func (h *Handler) GetPartiesBypubID(c *gin.Context) {
 			Error(c, 500, err)
 			return
 		}
-
+		pub, err := h.ps.GetByID(party.PubID)
+		if err != nil {
+			Error(c, 500, err)
+			return
+		}
+		geo, err := h.gs.GetbyPubID(pub.ID)
+		if err != nil {
+			Error(c, 500, err)
+			return
+		}
+		geores := Geolocation{
+			Longtitude: geo.Longtitude,
+			Latitude:   geo.Latitude,
+		}
+		pubres := Pub{
+			ID:          pub.ID,
+			Name:        pub.Name,
+			Image:       pub.Image,
+			Geolocation: geores,
+		}
 		resParties = append(resParties, Party{
 			ID:         party.ID,
 			Name:       party.Name,
@@ -137,6 +178,7 @@ func (h *Handler) GetPartiesBypubID(c *gin.Context) {
 				Name:     leader.Name,
 			},
 			Members: resMembers,
+			Pub:     pubres,
 		})
 	}
 	c.JSON(200, resParties)
@@ -180,7 +222,26 @@ func (h *Handler) GetPartiesByuserID(c *gin.Context) {
 			Error(c, 500, err)
 			return
 		}
-
+		pub, err := h.ps.GetByID(party.PubID)
+		if err != nil {
+			Error(c, 500, err)
+			return
+		}
+		geo, err := h.gs.GetbyPubID(pub.ID)
+		if err != nil {
+			Error(c, 500, err)
+			return
+		}
+		geores := Geolocation{
+			Longtitude: geo.Longtitude,
+			Latitude:   geo.Latitude,
+		}
+		pubres := Pub{
+			ID:          pub.ID,
+			Name:        pub.Name,
+			Image:       pub.Image,
+			Geolocation: geores,
+		}
 		resMembers := []Member{}
 		members, err := h.ms.GetByPartyID(id)
 		if err != nil {
@@ -215,9 +276,10 @@ func (h *Handler) GetPartiesByuserID(c *gin.Context) {
 				Name:     leader.Name,
 			},
 			Members: resMembers,
+			Pub:     pubres,
 		})
 	}
-	
+
 	c.JSON(200, resParties)
 }
 
