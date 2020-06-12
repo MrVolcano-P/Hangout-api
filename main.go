@@ -61,7 +61,7 @@ func main() {
 	r.POST("/signup", h.Signup)
 	r.POST("/login", h.Login)
 	r.GET("/checkUsername/:username", h.CheckUsername)
-	r.POST("/pub", h.CreatePub)
+
 	r.GET("/pub", h.ListPub)
 	r.GET("/pub/party/:id", h.GetPartiesBypubID)
 	r.GET("/review/:id", h.GetReviewByPubID)
@@ -73,7 +73,7 @@ func main() {
 		{
 			user.GET("/profile", h.GetProfile)
 			user.PUT("/profile", h.UpdateProfile)
-			user.POST("/profile/image", h.CreateImage)
+			// user.POST("/profile/image", h.CreateImage)
 			user.PUT("/profile/image", h.UpdateProfileImage)
 
 			user.POST("/review/:id", h.CreateReview)
@@ -82,6 +82,9 @@ func main() {
 			user.GET("/party", h.GetPartiesByuserID)
 			user.POST("/party/:id/join", h.JoinParty)
 
+			user.POST("/pub", h.CreatePub)
+			user.GET("/pub", h.GetMyPub)
+			user.PUT("/pub", h.UpdatePub)
 		}
 	}
 	r.Run(":8080")

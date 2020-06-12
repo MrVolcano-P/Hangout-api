@@ -27,6 +27,7 @@ type UserRes struct {
 	ID       uint   `json:"id"`
 	Username string `json:"username"`
 	Name     string `json:"name"`
+	Image    string `json:"image"`
 }
 
 func (h *Handler) CreateReview(c *gin.Context) {
@@ -60,6 +61,7 @@ func (h *Handler) CreateReview(c *gin.Context) {
 		ID:       user.ID,
 		Username: user.Username,
 		Name:     user.Name,
+		Image:    user.Image,
 	}
 	res := ReviewRes{
 		ID:   review.ID,
@@ -94,6 +96,7 @@ func (h *Handler) GetReviewByPubID(c *gin.Context) {
 			ID:       user.ID,
 			Username: user.Username,
 			Name:     user.Name,
+			Image:    user.Image,
 		}
 		res := ReviewRes{
 			ID:   review.ID,

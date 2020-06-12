@@ -22,8 +22,9 @@ type User struct {
 	FirstName string    `gorm:"not null"`
 	LastName  string    `gorm:"not null"`
 	DOB       time.Time `gorm:"not null"`
-	Image     Image
+	Image     string
 	Token     string `gorm:"index"`
+	Role      string `gorm:"not null"`
 	Review    []Review
 }
 
@@ -35,6 +36,7 @@ type UserService interface {
 	GetByID(id uint) (*User, error)
 	UpdateProfile(id uint, user *User) error
 	CheckUsername(username string) bool
+	UpdateProfileImage(id uint, image string) error
 }
 
 func NewUserService(db *gorm.DB, hmac *hash.HMAC) UserService {
@@ -55,6 +57,8 @@ func (ug *userGorm) Create(temp *User) error {
 	user.FirstName = temp.FirstName
 	user.LastName = temp.LastName
 	user.DOB = temp.DOB
+	user.Role = temp.Role
+	user.Image = temp.Image
 	hash, err := bcrypt.GenerateFromPassword([]byte(user.Password), cost)
 	if err != nil {
 		return err
@@ -131,6 +135,10 @@ func (ug *userGorm) GetByID(id uint) (*User, error) {
 func (ug *userGorm) UpdateProfile(id uint, user *User) error {
 	return ug.db.Model(&User{}).Where("id = ?", id).
 		Updates(map[string]interface{}{"name": user.Name, "email": user.Email, "first_name": user.FirstName, "last_name": user.LastName, "dob": user.DOB}).Error
+}
+func (ug *userGorm) UpdateProfileImage(id uint, image string) error {
+	return ug.db.Model(&User{}).Where("id = ?", id).
+		Update("image", image).Error
 }
 func (ug *userGorm) CheckUsername(username string) bool {
 	user := new(User)

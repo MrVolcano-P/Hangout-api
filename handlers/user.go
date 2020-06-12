@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"hangout-api/context"
 	"hangout-api/models"
-	"path"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -19,6 +18,8 @@ type User struct {
 	FirstName string    `json:"firstName"`
 	LastName  string    `json:"lastName"`
 	DOB       time.Time `json:"dob"`
+	Role      string    `json:"image"`
+	Image     string    `json:"image"`
 }
 type SignupReq struct {
 	Username  string `json:"username"`
@@ -28,6 +29,8 @@ type SignupReq struct {
 	FirstName string `json:"firstName"`
 	LastName  string `json:"lastName"`
 	DOB       string `json:"dob"`
+	Role      string `json:"role"`
+	Image     string `json:"image"`
 }
 type UserParty struct {
 	ID       uint   `json:"id"`
@@ -48,6 +51,7 @@ func (h *Handler) Signup(c *gin.Context) {
 	user.Name = req.Name
 	user.FirstName = req.FirstName
 	user.LastName = req.LastName
+	user.Role = req.Role
 	t1, e := time.Parse(
 		time.RFC3339,
 		req.DOB)
@@ -56,6 +60,8 @@ func (h *Handler) Signup(c *gin.Context) {
 	}
 	user.DOB = t1
 	// fmt.Println(user.DOB)
+	user.Image = req.Image
+	// fmt.Println(user)
 	if err := h.us.Create(user); err != nil {
 		Error(c, 500, err)
 		return
@@ -68,6 +74,8 @@ func (h *Handler) Signup(c *gin.Context) {
 		"firstName": user.FirstName,
 		"lastName":  user.LastName,
 		"dob":       user.DOB,
+		"image":     user.Image,
+		"role":      user.Role,
 	})
 }
 
@@ -115,30 +123,17 @@ func (h *Handler) GetProfile(c *gin.Context) {
 		Error(c, 401, errors.New("invalid token"))
 		return
 	}
-	image := h.ims.GetByUserID(user.ID)
-	if image == nil {
-		c.JSON(200, gin.H{
-			"id":       user.ID,
-			"username": user.Username,
-			"email":    user.Email,
-			"name":     user.Name,
-			"fistName": user.FirstName,
-			"lastName": user.LastName,
-			"dob":      user.DOB,
-			"image":    "",
-		})
-	} else {
-		c.JSON(200, gin.H{
-			"id":       user.ID,
-			"username": user.Username,
-			"email":    user.Email,
-			"name":     user.Name,
-			"fistName": user.FirstName,
-			"lastName": user.LastName,
-			"dob":      user.DOB,
-			"image":    path.Join(models.UploadPath, image.Filename),
-		})
-	}
+	c.JSON(200, gin.H{
+		"id":       user.ID,
+		"username": user.Username,
+		"email":    user.Email,
+		"name":     user.Name,
+		"fistName": user.FirstName,
+		"lastName": user.LastName,
+		"dob":      user.DOB,
+		"role":     user.Role,
+		"image":    user.Image,
+	})
 }
 
 type UpdateProfileReq struct {
@@ -173,11 +168,6 @@ func (h *Handler) UpdateProfile(c *gin.Context) {
 		Error(c, 500, err)
 		return
 	}
-	// userUp, err := h.us.GetByID(uint(user.ID))
-	// if err != nil {
-	// 	Error(c, 500, err)
-	// 	return
-	// }
 	c.JSON(200, gin.H{
 		"id":       user.ID,
 		"username": user.Username,
@@ -197,5 +187,38 @@ func (h *Handler) CheckUsername(c *gin.Context) {
 	fmt.Println(status)
 	c.JSON(200, gin.H{
 		"is_Available": status,
+	})
+}
+
+type UpdateImageReq struct {
+	Image string `json:"image"`
+}
+
+func (h *Handler) UpdateProfileImage(c *gin.Context) {
+	user := context.User(c)
+	if user == nil {
+		Error(c, 401, errors.New("invalid token"))
+		return
+	}
+	req := new(UpdateImageReq)
+	if err := c.BindJSON(req); err != nil {
+		Error(c, 400, err)
+		return
+	}
+	err := h.us.UpdateProfileImage(user.ID, req.Image)
+	if err != nil {
+		Error(c, 500, err)
+		return
+	}
+	c.JSON(200, gin.H{
+		"id":       user.ID,
+		"username": user.Username,
+		"email":    user.Email,
+		"name":     user.Name,
+		"fistName": user.FirstName,
+		"lastName": user.LastName,
+		"dob":      user.DOB,
+		"role":     user.Role,
+		"image":    req.Image,
 	})
 }

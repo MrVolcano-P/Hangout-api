@@ -10,12 +10,7 @@ type Geolocation struct {
 type GeoService interface {
 	Create(geolocation *Geolocation) error
 	GetbyPubID(id uint) (*Geolocation, error)
-	// Login(user *User) (string, error)
-	// GetByToken(token string) (*User, error)
-	// Logout(user *User) error
-	// GetByID(id uint) (*User, error)
-	// UpdateProfile(id uint, name string) error
-	// CheckUsername(username string) bool
+	UpdateGeo(id uint, geo *Geolocation) error
 }
 
 func NewGeoService(db *gorm.DB) GeoService {
@@ -36,4 +31,8 @@ func (gg *geoGorm) GetbyPubID(id uint) (*Geolocation, error) {
 		return nil, err
 	}
 	return geo, err
+}
+func (gg *geoGorm) UpdateGeo(id uint, geo *Geolocation) error {
+	return gg.db.Model(&Geolocation{}).Where("pub_id = ?", id).
+		Updates(map[string]interface{}{"longtitude": geo.Longtitude, "latitude": geo.Latitude}).Error
 }
