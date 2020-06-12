@@ -18,7 +18,7 @@ func Load() *Config {
 	}
 	conf.Connection = os.Getenv("DB_URL")
 	if conf.Connection == "" {
-		conf.Connection = "root:password@tcp(poomdv.c52jeww5mzql.ap-southeast-1.rds.amazonaws.com:3306)/hangout?parseTime=true"
+		conf.Connection = "root:password@tcp(127.0.0.1:3306)/hangout?parseTime=true"
 	}
 	conf.HMACKey = os.Getenv("HMAC_KEY")
 	if conf.HMACKey == "" {
