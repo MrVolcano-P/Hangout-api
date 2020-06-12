@@ -1,0 +1,4 @@
+hangout-api.mooo.com # For production  <--- เอา domain ที่เราอยากให้เป็น API นะครับ
+# :80 # For local
+
+reverse_proxy api:8080
